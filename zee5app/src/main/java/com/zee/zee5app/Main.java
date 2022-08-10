@@ -47,7 +47,7 @@ public class Main {
 		String[] languages = {Languages.TELUGU.toString()};
 		
 		
-		try {
+		/*try {
 			movieService.insertMovie(new Movie(actors, "SitaRamam", "Hanu", Genres.ROMANCE, "swapna",languages , 242.2f, "C:\\Users\\rathod.naik\\Videos\\videoplayback.mp4"));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -61,7 +61,10 @@ public class Main {
 		} catch (InvalidNameException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		
+		Movie movie = movieService.getMovieByMovieId("Si3232").get();
+		System.out.println(movie);
 		
 		
 		

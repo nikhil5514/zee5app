@@ -160,6 +160,10 @@ public class Movie {
 				&& Float.floatToIntBits(movieLength) == Float.floatToIntBits(other.movieLength)
 				&& Objects.equals(movieName, other.movieName) && Objects.equals(production, other.production);
 	}
+
+	public void setTrailer(String trailer) {
+		this.trailer = trailer;
+	}
 	
 	
 	

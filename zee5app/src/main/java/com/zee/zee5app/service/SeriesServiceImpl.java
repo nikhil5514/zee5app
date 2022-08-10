@@ -10,50 +10,48 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import com.zee.zee5app.dto.Movie;
+import com.zee.zee5app.dto.Series;
 import com.zee.zee5app.enums.Genres;
 import com.zee.zee5app.exceptions.InvalidIdException;
 import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 import com.zee.zee5app.repo.MovieRepository;
 import com.zee.zee5app.repo.MovieRepositoryImpl;
+import com.zee.zee5app.repo.SeriesRepository;
+import com.zee.zee5app.repo.SeriesRepositoryImpl;
 
-public class MovieServiceImpl implements MovieService {
-	
-	private MovieServiceImpl() {
+public class SeriesServiceImpl implements SeriesService {
+
+	private SeriesServiceImpl() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	private static MovieService movieService;
+	private static SeriesService seriesService;
 	
-	public static MovieService getInstance() {
+	public static SeriesService getInstance() {
 		
 		
-		if(movieService == null) {
-			movieService = new MovieServiceImpl();
+		if(seriesService == null) {
+			seriesService = new SeriesServiceImpl();
 			
 		}
 		
-		return movieService;
+		return seriesService;
 	}
-
-	//Instance of MovieRepository in MovieServiceImpl class
-	private MovieRepository movieRepository = MovieRepositoryImpl.getInstance();
 	
+	private SeriesRepository seriesRepository = SeriesRepositoryImpl.getInstance();
 	
 	@Override
-	public Movie insertMovie(Movie movie) throws FileNotFoundException, UnableToGenerateIdException {
+	public Series insertSeries(Series series) throws FileNotFoundException, UnableToGenerateIdException {
 		// TODO Auto-generated method stub
 		
-		//trailer file exists or not
-		
-		File file = new File(movie.getTrailer());
+		File file = new File(series.getTrailer());
 		BufferedInputStream bufferedInputStream = null;
 		BufferedOutputStream bufferedOutputStream = null;
 		System.out.println(file.getName());
 		
 		try {
-			if(movie.getTrailer() == null || 
-					movie.getTrailer() == "" || 
+			if(series.getTrailer() == null || 
+					series.getTrailer() == "" || 
 					!file.exists()) 
 			{
 				throw new FileNotFoundException("file does not exist");
@@ -90,51 +88,51 @@ public class MovieServiceImpl implements MovieService {
 		
 		// then take the path and store it in db --> handled by REPO
 		
-		return movieRepository.insertMovie(movie);
-	}
+		return seriesRepository.insertSeries(series);
 
-	@Override
-	public Movie updateMovie(String movieId, Movie movie) throws Exception {
-		// TODO Auto-generated method stub
-		return movieRepository.updateMovie(movieId, movie);
-	}
-
-	@Override
-	public Optional<Movie> getMovieByMovieId(String movieId) {
-		// TODO Auto-generated method stub
-		return movieRepository.getMovieByMovieId(movieId);
-	}
-
-	@Override
-	public Optional<List<Movie>> getAllMovies() {
-		// TODO Auto-generated method stub
-		return movieRepository.getAllMovies();
-	}
-
-	@Override
-	public Optional<List<Movie>> getAllMoviesByGenre(Genres genre) {
-		// TODO Auto-generated method stub
-		return movieRepository.getAllMoviesByGenre(genre);
-	}
-
-	@Override
-	public Optional<List<Movie>> getAllMoviesByName(String movieName) {
-		// TODO Auto-generated method stub
-		return movieRepository.getAllMoviesByName(movieName);
-	}
-	
-	@Override
-	public Optional<List<Movie>> findByOrderByMovieNameDsc() {
-		// TODO Auto-generated method stub
-		
-		return movieRepository.findByOrderByMovieNameDsc();
 		
 	}
 
 	@Override
-	public String deleteMovieByMovieId(String movieId) throws Exception {
+	public Series updateSeries(String seriesId, Series series) throws InvalidIdException {
 		// TODO Auto-generated method stub
-		return movieRepository.deleteMovieByMovieId(movieId);
+		return seriesRepository.updateSeries(seriesId, series);
+	}
+
+	@Override
+	public Optional<Series> getSeriesBySeriesId(String seriesId) {
+		// TODO Auto-generated method stub
+		return seriesRepository.getSeriesBySeriesId(seriesId);
+	}
+
+	@Override
+	public Optional<List<Series>> getAllSeries() {
+		// TODO Auto-generated method stub
+		return seriesRepository.getAllSeries();
+	}
+
+	@Override
+	public Optional<List<Series>> getAllSeriesByGenre(Genres genre) {
+		// TODO Auto-generated method stub
+		return seriesRepository.getAllSeriesByGenre(genre);
+	}
+
+	@Override
+	public Optional<List<Series>> getAllSeriesByName(String seriesName) {
+		// TODO Auto-generated method stub
+		return seriesRepository.getAllSeriesByName(seriesName);
+	}
+
+	@Override
+	public Optional<List<Series>> findByOrderBySeriesNameDsc() {
+		// TODO Auto-generated method stub
+		return seriesRepository.findByOrderBySeriesNameDsc();
+	}
+
+	@Override
+	public String deleteSeriesBySeriesId(String seriesId) throws Exception {
+		// TODO Auto-generated method stub
+		return seriesRepository.deleteSeriesBySeriesId(seriesId);
 	}
 
 }

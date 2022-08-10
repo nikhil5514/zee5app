@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,30 +89,65 @@ public class UserRepositoryImpl implements UserRepo {
 	public Optional<User> updateUser(String userId, User user)throws InvalidIdException {
 		// TODO Auto-generated method stub
 		
-		String query = "update from user_table where userid=?";
+//		String query = "update from user_table where userid=?";
+//		Connection connection = null;
+//		PreparedStatement preparedStatement = null;
+//
+//		connection = dbUtils.getConnection();
+//		
+//		try {
+//			preparedStatement = connection.prepareStatement(query);
+//			preparedStatement.setString(1, userId);
+//			int result = preparedStatement.executeUpdate();
+//			if (result > 0) {
+//				// update
+//
+//				return Optional.of(user);
+//			} else {
+//				throw new InvalidIdException("UserId is not Valid");
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} finally {
+//			dbUtils.closeConnection(connection);
+//		}
+//		return Optional.empty();
+		
+		
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
+		String updateQuery = "upadte user_table "
+				+ "set fisrtname=?, lastname=?, email=?, doj=?, dob=?, active=? "
+				+ "where userid=?";
 
 		connection = dbUtils.getConnection();
-		
 		try {
-			preparedStatement = connection.prepareStatement(query);
+			preparedStatement = connection.prepareStatement(updateQuery);
 			preparedStatement.setString(1, userId);
+			preparedStatement.setString(2, user.getFirstName());
+			preparedStatement.setString(3, user.getLastName());
+			preparedStatement.setString(4, user.getEmail());
+			preparedStatement.setDate(5, Date.valueOf(user.getDoj()));
+			preparedStatement.setDate(6, Date.valueOf(user.getDob()));
+			preparedStatement.setBoolean(7, user.isActive());
+			
 			int result = preparedStatement.executeUpdate();
+			
 			if (result > 0) {
-				// update
-
 				return Optional.of(user);
 			} else {
-				throw new InvalidIdException("UserId is not Valid");
+				throw new InvalidIdException("userId not found");
 			}
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			// TODO: handle exception
 			e.printStackTrace();
 		} finally {
 			dbUtils.closeConnection(connection);
 		}
-		return Optional.empty();
+
+		return null;	
 	}
 
 	@Override
@@ -152,7 +186,7 @@ public class UserRepositoryImpl implements UserRepo {
 		ResultSet resultSet = null;
 		List<User> users = new ArrayList<User>();
 		
-		String query = "select * from user_table where userid = ?";
+		String query = "select * from user_table";
 		
 		connection = dbUtils.getConnection();
 		

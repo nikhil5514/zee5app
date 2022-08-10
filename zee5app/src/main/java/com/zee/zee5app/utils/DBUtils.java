@@ -1,7 +1,5 @@
 package com.zee.zee5app.utils;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -200,6 +198,59 @@ public class DBUtils {
 		
 		
 		
+	}
+	
+	
+public String seriesIdGenerator(String seriesName) throws UnableToGenerateIdException {
+		
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int id = 0;
+		int updateResult = 0;
+		String query = "select id from seriesidgenerator";
+		String updateIdStatement = "update seriesidgenerator set id=?";
+		String newId = null;
+		
+		connection = this.getConnection();
+		
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			if(resultSet.next()) {
+				
+				id = resultSet.getInt(1);
+				
+				id = ++id;
+				
+				newId = "" + seriesName.charAt(0) + seriesName.charAt(1) +  Integer.toString(id);
+				System.out.println(newId);
+				
+				preparedStatement = connection.prepareStatement(updateIdStatement);
+				preparedStatement.setInt(1, id);
+				
+				updateResult = preparedStatement.executeUpdate();
+				
+				if(updateResult == 0) {
+					throw new UnableToGenerateIdException("unable to generate id");
+				}
+				
+				return newId;
+			}
+			
+			return null;
+			
+		} catch (SQLException e) {
+			// TODO: handle exception
+			throw new UnableToGenerateIdException("unable to generate id "
+					+ e.getMessage());
+		}
+		finally {
+			
+			this.closeConnection(connection);
+		}	
 	}
 	
 	public static void main(String[] args) {
