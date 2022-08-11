@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.zee.zee5app.dto.Series;
 import com.zee.zee5app.enums.Genres;
 import com.zee.zee5app.exceptions.InvalidIdException;
@@ -19,26 +22,28 @@ import com.zee.zee5app.repo.MovieRepositoryImpl;
 import com.zee.zee5app.repo.SeriesRepository;
 import com.zee.zee5app.repo.SeriesRepositoryImpl;
 
+@Service
 public class SeriesServiceImpl implements SeriesService {
 
-	private SeriesServiceImpl() {
-		// TODO Auto-generated constructor stub
-	}
+//	private SeriesServiceImpl() {
+//		// TODO Auto-generated constructor stub
+//	}
+//	
+//	private static SeriesService seriesService;
+//	
+//	public static SeriesService getInstance() {
+//		
+//		
+//		if(seriesService == null) {
+//			seriesService = new SeriesServiceImpl();
+//			
+//		}
+//		
+//		return seriesService;
+//	}
 	
-	private static SeriesService seriesService;
-	
-	public static SeriesService getInstance() {
-		
-		
-		if(seriesService == null) {
-			seriesService = new SeriesServiceImpl();
-			
-		}
-		
-		return seriesService;
-	}
-	
-	private SeriesRepository seriesRepository = SeriesRepositoryImpl.getInstance();
+	@Autowired
+	private SeriesRepository seriesRepository;
 	
 	@Override
 	public Series insertSeries(Series series) throws FileNotFoundException, UnableToGenerateIdException {

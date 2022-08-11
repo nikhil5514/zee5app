@@ -9,30 +9,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.zee.zee5app.dto.User;
 import com.zee.zee5app.exceptions.InvalidIdException;
 import com.zee.zee5app.exceptions.NoDataFoundException;
 import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 import com.zee.zee5app.utils.DBUtils;
 
+@Repository
 public class UserRepositoryImpl implements UserRepo {
 
-	private static UserRepo userRepo;
+//	private static UserRepo userRepo;
+//	
+//	private UserRepositoryImpl() {
+//		// TODO Auto-generated constructor stub
+//	}
+//	
+//	public static UserRepo getInstance() {
+//		if(userRepo == null) {
+//			userRepo = new UserRepositoryImpl();
+//		}
+//		return userRepo;
+//	}
 	
-	private UserRepositoryImpl() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	public static UserRepo getInstance() {
-		if(userRepo == null) {
-			userRepo = new UserRepositoryImpl();
-		}
-		return userRepo;
-	}
-	
-	
-	
-	private DBUtils dbUtils = DBUtils.getInstance();
+	@Autowired
+	DataSource dataSource;
+	@Autowired
+	private DBUtils dbUtils;
 	
 	@Override
 	public User insertUser(User user) throws UnableToGenerateIdException {
@@ -47,11 +54,11 @@ public class UserRepositoryImpl implements UserRepo {
 				+ " values(?,?,?,?,?,?,?)";
 		
 		//connection object
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 		
 		//statement object(prepared)
 		try {
-			
+			connection = dataSource.getConnection();
 			preparedStatement = connection.prepareStatement(insertStatement);
 			
 			preparedStatement.setString(1, dbUtils.userIdGenerator(user.getFirstName(), user.getLastName()));
@@ -74,10 +81,6 @@ public class UserRepositoryImpl implements UserRepo {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		finally {
-			dbUtils.closeConnection(connection);
 		}
 		
 		//we should get the result, based on that we will return the result
@@ -121,8 +124,9 @@ public class UserRepositoryImpl implements UserRepo {
 				+ "set fisrtname=?, lastname=?, email=?, doj=?, dob=?, active=? "
 				+ "where userid=?";
 
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 		try {
+			connection = dataSource.getConnection();
 			preparedStatement = connection.prepareStatement(updateQuery);
 			preparedStatement.setString(1, userId);
 			preparedStatement.setString(2, user.getFirstName());
@@ -143,10 +147,7 @@ public class UserRepositoryImpl implements UserRepo {
 		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-		} finally {
-			dbUtils.closeConnection(connection);
 		}
-
 		return null;	
 	}
 
@@ -159,7 +160,7 @@ public class UserRepositoryImpl implements UserRepo {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		
-		connection = dbUtils.getConnection();
+		connection = dataSource.getConnection();
 		
 		
 		preparedStatement = connection.prepareStatement(deleteStatement);
@@ -188,9 +189,10 @@ public class UserRepositoryImpl implements UserRepo {
 		
 		String query = "select * from user_table";
 		
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 		
 		try {
+			connection = dataSource.getConnection();
 			preparedStatement = connection.prepareStatement(query);
 			
 			//preparedStatement.setString(1, userId); use only if accesslevel = none
@@ -219,9 +221,7 @@ public class UserRepositoryImpl implements UserRepo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		finally {
-			 dbUtils.closeConnection(connection);
-		}
+		
 		return Optional.empty();
 		
 		
@@ -237,9 +237,8 @@ public class UserRepositoryImpl implements UserRepo {
 		
 		String query = "select * from user_table where userid = ?";
 		
-		connection = dbUtils.getConnection();
-		
 		try {
+			connection = dataSource.getConnection();
 			preparedStatement = connection.prepareStatement(query);
 			
 			//preparedStatement.setString(1, userId); use only if accesslevel = none
@@ -270,9 +269,7 @@ public class UserRepositoryImpl implements UserRepo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		finally {
-			dbUtils.closeConnection(connection);
-		}
+		
 		return Optional.empty();
 	}
 

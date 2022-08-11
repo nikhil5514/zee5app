@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.zee.zee5app.dto.Series;
 import com.zee.zee5app.enums.Genres;
 import com.zee.zee5app.exceptions.InvalidIdException;
@@ -16,22 +21,27 @@ import com.zee.zee5app.exceptions.NoDataFoundException;
 import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 import com.zee.zee5app.utils.DBUtils;
 
+@Repository
 public class SeriesRepositoryImpl implements SeriesRepository {
 
-	private static SeriesRepository seriesRepo;
+//	private static SeriesRepository seriesRepo;
+//
+//	private SeriesRepositoryImpl() {
+//		// TODO Auto-generated constructor stub
+//	}
+//
+//	public static SeriesRepository getInstance() {
+//		if (seriesRepo == null) {
+//			seriesRepo = new SeriesRepositoryImpl();
+//		}
+//		return seriesRepo;
+//	}
 
-	private SeriesRepositoryImpl() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public static SeriesRepository getInstance() {
-		if (seriesRepo == null) {
-			seriesRepo = new SeriesRepositoryImpl();
-		}
-		return seriesRepo;
-	}
-
-	private DBUtils dbUtils = DBUtils.getInstance();
+	@Autowired
+	private DBUtils dbUtils;
+	
+	@Autowired
+	DataSource dataSource;
 	
 	@Override
 	public Series insertSeries(Series series) throws UnableToGenerateIdException {
@@ -46,10 +56,12 @@ public class SeriesRepositoryImpl implements SeriesRepository {
 				+ " values(?,?,?,?,?,?,?,?,?)";
 		
 		//connection object
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 		
 		//statement object(prepared)
 		try {
+			
+			connection = dataSource.getConnection();
 			
 			preparedStatement = connection.prepareStatement(insertStatement);
 			
@@ -104,8 +116,11 @@ public class SeriesRepositoryImpl implements SeriesRepository {
 				+ "set actors=?, seriesname=?, director=?, genre=?, production=?, languages=?, serieslength=?, trailer=? "
 				+ "where seriesid=?";
 
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(updateQuery);
 			preparedStatement.setString(1, seriesId);
 			preparedStatement.setString(2, String.join(",", series.getActors()));
@@ -147,9 +162,12 @@ public class SeriesRepositoryImpl implements SeriesRepository {
 		
 		String query = "select * from series_table where seriesId=?";
 		
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 		
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, seriesId);
 			resultSet = preparedStatement.executeQuery();
@@ -204,9 +222,12 @@ public class SeriesRepositoryImpl implements SeriesRepository {
 		
 		String query = "select * from series_table";
 		
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 		
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			//preparedStatement.setString(1, seriesId);
 			resultSet = preparedStatement.executeQuery();
@@ -260,9 +281,12 @@ public class SeriesRepositoryImpl implements SeriesRepository {
 		
 		String query = "select * from series_table where genre = ?";
 		
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 		
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(5, genre.toString());
 			resultSet = preparedStatement.executeQuery();
@@ -315,9 +339,12 @@ public class SeriesRepositoryImpl implements SeriesRepository {
 		
 		String query = "select * from series_table where seriesname = ?";
 		
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 		
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(3, seriesName);
 			resultSet = preparedStatement.executeQuery();
@@ -370,9 +397,12 @@ public class SeriesRepositoryImpl implements SeriesRepository {
 
 		String query = "select * from series_table order by seriesname desc";
 
-		connection = dbUtils.getConnection();
+		//connection = dataSource.getConnection();
 
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			// preparedStatement.setString(1, movieId);
 			resultSet = preparedStatement.executeQuery();
@@ -422,7 +452,7 @@ public class SeriesRepositoryImpl implements SeriesRepository {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 
-		connection = dbUtils.getConnection();
+		connection = dataSource.getConnection();
 
 		preparedStatement = connection.prepareStatement(deleteStatement);
 

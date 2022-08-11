@@ -1,5 +1,6 @@
 package com.zee.zee5app.repo;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,6 @@ public interface UserRepo {
 	public Optional<User> updateUser(String userId, User user) throws InvalidIdException;
 	public String deleteUser(String userId) throws Exception;
 	public Optional<List<User>> getAllUsers();
-	public Optional<User> getUserByUserId(String userId);
+	public Optional<User> getUserByUserId(String userId) throws SQLException;
 	
 }

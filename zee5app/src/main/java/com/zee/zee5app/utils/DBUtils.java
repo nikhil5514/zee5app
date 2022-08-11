@@ -9,22 +9,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.springframework.stereotype.Component;
+
 import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 
+@Component
 public class DBUtils {
 
-	private DBUtils() {
-		// TODO Auto-generated constructor stub
-	}
-
-	private static DBUtils dbUtils;
-
-	public static DBUtils getInstance() {
-		if (dbUtils == null) {
-			dbUtils = new DBUtils();
-		}
-		return dbUtils;
-	}
+//	private DBUtils() {
+//		// TODO Auto-generated constructor stub
+//	}
+//
+//	private static DBUtils dbUtils;
+//
+//	public static DBUtils getInstance() {
+//		if (dbUtils == null) {
+//			dbUtils = new DBUtils();
+//		}
+//		return dbUtils;
+//	}
 	
 	public Connection getConnection() {
 		// to provide the connection
@@ -251,17 +254,6 @@ public String seriesIdGenerator(String seriesName) throws UnableToGenerateIdExce
 			
 			this.closeConnection(connection);
 		}	
-	}
-	
-	public static void main(String[] args) {
-		String res = null;
-		try {
-			res = DBUtils.getInstance().movieIdGenerator("sitaRamam");
-		} catch (UnableToGenerateIdException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(res);
 	}
 
 }

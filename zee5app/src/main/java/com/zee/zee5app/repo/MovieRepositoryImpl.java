@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.zee.zee5app.dto.Movie;
 import com.zee.zee5app.enums.Genres;
 import com.zee.zee5app.exceptions.InvalidIdException;
@@ -16,22 +21,27 @@ import com.zee.zee5app.exceptions.NoDataFoundException;
 import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 import com.zee.zee5app.utils.DBUtils;
 
+@Repository
 public class MovieRepositoryImpl implements MovieRepository {
 
-	private static MovieRepository movieRepo;
+//	private static MovieRepository movieRepo;
+//	
+//	private MovieRepositoryImpl() {
+//		// TODO Auto-generated constructor stub
+//	}
+//	
+//	public static MovieRepository getInstance() {
+//		if(movieRepo == null) {
+//			movieRepo = new MovieRepositoryImpl();
+//		}
+//		return movieRepo;
+//	}
 	
-	private MovieRepositoryImpl() {
-		// TODO Auto-generated constructor stub
-	}
+	@Autowired
+	private DBUtils dbUtils;
 	
-	public static MovieRepository getInstance() {
-		if(movieRepo == null) {
-			movieRepo = new MovieRepositoryImpl();
-		}
-		return movieRepo;
-	}
-	
-	private DBUtils dbUtils = DBUtils.getInstance();
+	@Autowired
+	private DataSource dataSource;
 	
 	@Override
 	public Movie insertMovie(Movie movie) throws UnableToGenerateIdException {
@@ -46,10 +56,12 @@ public class MovieRepositoryImpl implements MovieRepository {
 				+ " values(?,?,?,?,?,?,?,?,?)";
 		
 		//connection object
-		connection = dbUtils.getConnection();
+		//connection = dbUtils.getConnection();
 		
 		//statement object(prepared)
 		try {
+			
+			connection = dataSource.getConnection();
 			
 			preparedStatement = connection.prepareStatement(insertStatement);
 			
@@ -103,8 +115,11 @@ public class MovieRepositoryImpl implements MovieRepository {
 				+ "set actors=?, moviename=?, director=?, genre=?, production=?, languages=?, movielength=?, trailer=? "
 				+ "where movieid=?";
 
-		connection = dbUtils.getConnection();
+		//connection = dbUtils.getConnection();
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(updateQuery);
 			preparedStatement.setString(1, movieId);
 			preparedStatement.setString(2, String.join(",", movie.getActors()));
@@ -144,9 +159,12 @@ public class MovieRepositoryImpl implements MovieRepository {
 		
 		String query = "select * from movie_table where movieId=?";
 		
-		connection = dbUtils.getConnection();
+		//connection = dbUtils.getConnection();
 		
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, movieId);
 			resultSet = preparedStatement.executeQuery();
@@ -199,9 +217,12 @@ public class MovieRepositoryImpl implements MovieRepository {
 		
 		String query = "select * from movie_table";
 		
-		connection = dbUtils.getConnection();
+		//connection = dbUtils.getConnection();
 		
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			//preparedStatement.setString(1, movieId);
 			resultSet = preparedStatement.executeQuery();
@@ -253,9 +274,12 @@ public class MovieRepositoryImpl implements MovieRepository {
 		
 		String query = "select * from movie_table where genre = ?";
 		
-		connection = dbUtils.getConnection();
+		//connection = dbUtils.getConnection();
 		
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(5, genre.toString());
 			resultSet = preparedStatement.executeQuery();
@@ -308,9 +332,12 @@ public class MovieRepositoryImpl implements MovieRepository {
 		
 		String query = "select * from movie_table where moviename = ?";
 		
-		connection = dbUtils.getConnection();
+		//connection = dbUtils.getConnection();
 		
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(3, movieName);
 			resultSet = preparedStatement.executeQuery();
@@ -363,9 +390,12 @@ public class MovieRepositoryImpl implements MovieRepository {
 
 		String query = "select * from movie_table order by moviename desc";
 
-		connection = dbUtils.getConnection();
+		//connection = dbUtils.getConnection();
 
 		try {
+			
+			connection = dataSource.getConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			// preparedStatement.setString(1, movieId);
 			resultSet = preparedStatement.executeQuery();
@@ -414,7 +444,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 
-		connection = dbUtils.getConnection();
+		connection = dataSource.getConnection();
 
 		preparedStatement = connection.prepareStatement(deleteStatement);
 

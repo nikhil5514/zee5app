@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.zee.zee5app.dto.Movie;
 import com.zee.zee5app.enums.Genres;
 import com.zee.zee5app.exceptions.InvalidIdException;
@@ -17,27 +20,29 @@ import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 import com.zee.zee5app.repo.MovieRepository;
 import com.zee.zee5app.repo.MovieRepositoryImpl;
 
+@Service
 public class MovieServiceImpl implements MovieService {
 	
-	private MovieServiceImpl() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	private static MovieService movieService;
-	
-	public static MovieService getInstance() {
-		
-		
-		if(movieService == null) {
-			movieService = new MovieServiceImpl();
-			
-		}
-		
-		return movieService;
-	}
+//	private MovieServiceImpl() {
+//		// TODO Auto-generated constructor stub
+//	}
+//	
+//	private static MovieService movieService;
+//	
+//	public static MovieService getInstance() {
+//		
+//		
+//		if(movieService == null) {
+//			movieService = new MovieServiceImpl();
+//			
+//		}
+//		
+//		return movieService;
+//	}
 
 	//Instance of MovieRepository in MovieServiceImpl class
-	private MovieRepository movieRepository = MovieRepositoryImpl.getInstance();
+	@Autowired
+	private MovieRepository movieRepository;
 	
 	
 	@Override
